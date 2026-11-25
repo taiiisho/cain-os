@@ -1,0 +1,61 @@
+plugins {
+    id "com.android.application"
+}
+
+// Signing: GitHub secrets if you set them, otherwise the key in signing/ that ships with this project.
+// Every build must be signed with the same key, or Android refuses to install it over the old one.
+def cainStoreFile = System.getenv("CAIN_KEYSTORE_FILE") ?: rootProject.file("signing/cainos.jks").path
+def cainStorePass = System.getenv("CAIN_KEYSTORE_PASSWORD") ?: "cainos-kairnlabs"
+def cainKeyAlias = System.getenv("CAIN_KEY_ALIAS") ?: "cainos"
+def cainKeyPass = System.getenv("CAIN_KEY_PASSWORD") ?: cainStorePass
+
+android {
+    namespace "com.kairnlabs.cainos"
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.kairnlabs.cainos"
+        minSdk 24
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+    }
+
+    signingConfigs {
+        release {
+            storeFile file(cainStoreFile)
+            storePassword cainStorePass
+            keyAlias cainKeyAlias
+            keyPassword cainKeyPass
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+        debug {
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    // The fonts and page are already compressed or tiny; keep assets uncompressed so the WebView reads them quickly.
+    androidResources {
+        noCompress "woff2", "js", "css", "html"
+    }
+
+    applicationVariants.all { v ->
+        v.outputs.all { o -> o.outputFileName = "CainOS-${v.versionName}-${v.buildType.name}.apk" }
+    }
+}

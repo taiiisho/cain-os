@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cain OS</string>
+    <string name="media_service">Cain OS · Now playing</string>
+    <string name="home_service">Cain OS Home button</string>
+    <string name="home_service_desc">Opens Cain OS when you press the Home button. It only notices when the device\'s own home screen appears; it never reads what is on your screen.</string>
+</resources>
